@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 function Greeting(){
-    return (<h1 className="greeting">Hello player</h1>);
+    return (<h1 className="greeting">Tic Tac Toe</h1>);
 }
 
 function Square(props){
