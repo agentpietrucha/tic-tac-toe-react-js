@@ -2,19 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-function Greeting(){
-    return (<h1 className="greeting">Tic Tac Toe</h1>);
-}
-
-function Square(props){
-    return (
-        <button className="square" onClick={props.onClick}>{props.value}</button>
-    );
-}
-
-function Refresh(props){
-    return <button className="refresh" onClick={props.onClick}>Refresh</button>;
-}
+import Board from './board';
+import { Greeting } from './greeting';
+import { Refresh } from './refresh';
 
 function isFull(squares){
     var tmp = 0;
@@ -47,39 +37,6 @@ function winner(squares){
     }
 }
 
-class Board extends React.Component{
-    constructor(props){
-        super(props);
-        this.renderSquare = this.renderSquare.bind(this);
-    }
-
-    renderSquare(i){
-        return (<Square value={this.props.squares[i]} onClick={()=>this.props.onClick(i)}/>);
-    }
-
-    render(){
-        return(
-            <div className="board_container">
-                <div className="boardRow">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="boardRow">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="boardRow">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
-    }
-}
-
 class Main extends React.Component{
     constructor(props){
         super(props);
@@ -98,6 +55,7 @@ class Main extends React.Component{
             return;
         }
         squares[i] = (this.state.isXCurrent ? 'X' : 'O');
+        console.log('winner: ', winner(squares));
         this.setState({
             squares: squares,
             isXCurrent: !this.state.isXCurrent,
@@ -114,6 +72,8 @@ class Main extends React.Component{
     }
 
     render(){
+        let opacity = this.state.winner ? 0.5 : 1;
+        let pointerEvent = this.state.winner ? 'none' : 'all';
         return (
             <div>
                 <div className="greeting_container">
@@ -122,9 +82,16 @@ class Main extends React.Component{
                 <div className="dataBoard">
                     <h3>current player: {this.state.isXCurrent ? 'X' : 'O'}</h3>
                     <h3>winner is: {this.state.winner}</h3>
-                    <Refresh onClick={this.handleRefresh}/>
+                    <Refresh 
+                    onClick={this.handleRefresh}
+                    opacity={this.state.winner ? 1 : 0.5}
+                    pointerEvents={this.state.winner ? 'all' : 'none'}/>
                 </div>
-                <Board squares={this.state.squares} onClick={this.handleClick}/>
+                <Board 
+                squares={this.state.squares}
+                onClick={this.handleClick}
+                opacity={this.state.winner ? 0.5 : 1}
+                pointerEvents={this.state.winner ? 'none' : 'all'}/>
             </div>
         );
     }
@@ -132,7 +99,4 @@ class Main extends React.Component{
 
 ReactDOM.render(<Main/>, document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
